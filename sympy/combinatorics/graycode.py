@@ -120,3 +120,21 @@ def gray_code_subsets(gray_code_set):
     """
     return [get_subset_from_bitlist(gray_code_set, bitlist) for \
             bitlist in list(GrayCode(len(gray_code_set)).get_next_bitlist())]
+
+def rank_gray_code(code):
+    """
+    Ranks the gray code.
+
+    Examples:
+    >>> from sympy.combinatorics.graycode import rank_gray_code
+    >>> rank_gray_code(['1','0','0'])
+    1
+    >>> rank_gray_code(['1','0','1','0','0'])
+    6
+    """
+    if len(code)==0:
+        return 0
+    elif code[-1]=='0':
+        return rank_gray_code(code[:-1])
+    else:
+        return 2**len(code) - rank_gray_code(code[:-1]) -1
