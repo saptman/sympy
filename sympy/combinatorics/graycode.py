@@ -89,3 +89,34 @@ def random_bitlist(n):
     Generates a random bitlist.
     """
     return [random.randint(0, 1) for i in xrange(n)]
+
+def get_subset_from_bitlist(super_set, bitlist):
+    """
+    Gets the subset defined by the bitlist.
+
+    Examples:
+    >>> from sympy.combinatorics.graycode import get_subset_from_bitlist
+    >>> get_subset_from_bitlist(['a','b','c','d'],['0','0','1','1'])
+    ['c', 'd']
+    """
+    if len(super_set) != len(bitlist):
+        raise ValueError("The sizes of the lists are not equal")
+    ret_set = super_set[:]
+    for i in xrange(len(bitlist)):
+        if bitlist[i] == '0':
+            ret_set.remove(super_set[i])
+    return ret_set
+
+def gray_code_subsets(gray_code_set):
+    """
+    Generates the subsets as enumerated
+    by a Gray code.
+
+    Examples:
+    >>> from sympy.combinatorics.graycode import gray_code_subsets
+    >>> list(gray_code_subsets(['a','b','c']))
+    [[], ['c'], ['b', 'c'], ['b'], ['a', 'b'], ['a', 'b', 'c'], \
+    ['a', 'c'], ['a']]
+    """
+    return [get_subset_from_bitlist(gray_code_set, bitlist) for \
+            bitlist in list(GrayCode(len(gray_code_set)).get_next_bitlist())]
