@@ -179,3 +179,26 @@ def unrank_gray_code(k, n):
     ret_list = unrank(k, n)
     list.reverse(ret_list)
     return ret_list
+
+def rank_graycode_subset(subset, superset):
+    """
+    Ranks a gray code subset.
+
+    Examples:
+    >>> from sympy.combinatorics.graycode import rank_graycode_subset
+    >>> rank_graycode_subset(['b','c'], ['a','b','c','d'])
+    4
+    """
+    return rank_gray_code(get_bitlist_from_subset(subset, superset))
+
+def unrank_graycode_subset(rank, superset):
+    """
+    Unranks a gray code subset.
+
+    Examples:
+    >>> from sympy.combinatorics.graycode import unrank_graycode_subset
+    >>> unrank_graycode_subset(4, ['a','b','c','d'])
+    ['b', 'c']
+    """
+    return get_subset_from_bitlist(superset,
+                                   unrank_gray_code(rank,len(superset)))
