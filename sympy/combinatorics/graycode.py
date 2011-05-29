@@ -108,6 +108,20 @@ def get_subset_from_bitlist(super_set, bitlist):
             ret_set.remove(super_set[i])
     return ret_set
 
+def get_bitlist_from_subset(subset, superset):
+    """
+    Gets the bitlist corresponding to a subset.
+
+    Examples:
+    >>> from sympy.combinatorics.graycode import get_bitlist_from_subset
+    >>> get_bitlist_from_subset(['c','d'],['a','b','c','d'])
+    ['0', '0', '1', '1']
+    """
+    bitlist = ['0'] * len(superset)
+    for i in subset:
+        bitlist[superset.index(i)] = '1'
+    return bitlist
+
 def gray_code_subsets(gray_code_set):
     """
     Generates the subsets as enumerated
