@@ -1,4 +1,5 @@
 from sympy.core import Basic
+from sympy.functions import ceiling, log
 
 import random
 
@@ -138,3 +139,29 @@ def rank_gray_code(code):
         return rank_gray_code(code[:-1])
     else:
         return 2**len(code) - rank_gray_code(code[:-1]) -1
+
+def unrank_gray_code(k, n):
+    """
+    Unranks an n-bit sized gray code of rank k.
+
+    We generate in reverse order to allow for tail-call
+    optimization.
+
+    Examples:
+    >>> from sympy.combinatorics.graycode import unrank_gray_code, \
+    rank_gray_code
+    >>> unrank_gray_code(3, 5)
+    ['0', '1', '0', '0', '0']
+    >>> rank_gray_code(unrank_gray_code(7, 10))
+    7
+    """
+    def unrank(k, n):
+        if n == 1:
+            return [str(k % 2)]
+        m = 2**(n - 1)
+        if k < m:
+            return ["0"] + unrank(k, n - 1)
+        return ["1"] + unrank(m - (k % m) - 1, n - 1)
+    ret_list = unrank(k, n)
+    list.reverse(ret_list)
+    return ret_list
