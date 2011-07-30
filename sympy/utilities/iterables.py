@@ -1201,3 +1201,40 @@ def generate_oriented_forest(n):
                     break
             else:
                 break
+
+def generate_necklace_debruijn(n, d):
+    """
+    Routine to generate fixed density necklaces and
+    DeBruijn sequences.
+    """
+    S = [None] * n
+    T = [None] * n
+    c = 1
+    _from = d + 1
+
+    # Some helper routines
+    def set_block(j, z, d):
+        S[j] = z;
+        T[j] = d;
+
+    def test_necklack(r):
+        i = 0
+        p = 0
+
+        if d == 0 or d == n:
+            return 1
+        for i in xrange(c):
+            if r - i <= 0:
+                r += c
+            if r < c or c == 1:
+                p += S[r - i] + T[r - i]
+            if S[c - i] < S[r - i] or \
+               (S[c - i] == S[r - i] and T[c - i] > T[r - i]):
+                return 0
+            if S[c - i] > S[r - i] or \
+               (S[c - i] == S[r - i] and T[c - i] < T[r - i]):
+                return n
+        return p
+
+    set_block(1, d, n - d)
+    a = [1] * d + [0] * (n - d)
