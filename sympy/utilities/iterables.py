@@ -1238,6 +1238,30 @@ def generate_necklace_debruijn(n, d):
             c -= 1
             set_block(c, s, t)
 
+    def pseudo_oracle(s, t, r):
+        if s == 1:
+            return t
+        elif c == 1:
+            if s == 2:
+                return (n - 1)/2
+            return 1
+        elif s > S[r] + 2:
+            return 0
+        elif s == S[r] + 2:
+            if s == S[c-1] + 2 and t >  T[c - 1]:
+                return 1
+            return  0
+        elif s - 1 == S[r]:
+            if s == 2:
+                return Max(t-T[r], (t+1)/2)
+            if ((s - 1 > S[c - 1] + 1) or \
+                (s - 1 == S[c - 1] + 1 and t <= T[c-1])):
+                return Max(t-T[r], 0)
+            return Max(t-T[r], 1)
+        elif s == S[r]:
+            return t
+        raise ValueError("Invalid value of s provided.")
+
     def test_necklace(r):
         i = 0
         p = 0
