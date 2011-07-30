@@ -1236,5 +1236,17 @@ def generate_necklace_debruijn(n, d):
                 return n
         return p
 
+    def test_suffix(r):
+        for i in xrange(r):
+            if c - 1 - i == r:
+                return 1
+            if S[c - 1 - i] < S[r - i] or \
+               (S[c - 1 - i] == S[r - i] and T[c - 1 - i] > T[r - i]):
+                return 0
+            if S[c - 1 - i] > S[r - i] or \
+               (S[c - 1 - i] == S[r - i] and T[c - 1 - i] < T[r - i]):
+                return 1
+        return 0
+
     set_block(1, d, n - d)
     a = [1] * d + [0] * (n - d)
