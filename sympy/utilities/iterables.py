@@ -1211,13 +1211,34 @@ def generate_necklace_debruijn(n, d):
     T = [None] * n
     c = 1
     _from = d + 1
+    db = False
+    str = False
+    bl = False
 
     # Some helper routines
+
     def set_block(j, z, d):
         S[j] = z;
         T[j] = d;
 
-    def test_necklack(r):
+    def update(s, t, i):
+        if i == 0:
+            set_block(c - 1, S[c-1] + 1, T[c-1])
+            set_block(c, S[c] - 1, T[c])
+        else:
+            set_block(c, 1, i)
+            set_block(c + 1, s - 1, t - i)
+            c += 1
+
+    def restore(s, t, i):
+        if i == 0:
+            set_block(c - 1, S[c - 1] - 1, T[c - 1])
+            set_block(c, S[c] + 1, T[c])
+        else:
+            c -= 1
+            set_block(c, s, t)
+
+    def test_necklace(r):
         i = 0
         p = 0
 
