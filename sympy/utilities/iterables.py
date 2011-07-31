@@ -1211,9 +1211,13 @@ def generate_necklace_debruijn(n, d):
     T = [None] * n
     c = 1
     _from = d + 1
+    to = 0
     db = False
-    str = False
+    stri = True
     bl = False
+    neck = True
+    lyn = False
+    pseudo = False
 
     # Some helper routines
 
@@ -1221,7 +1225,7 @@ def generate_necklace_debruijn(n, d):
         S[j] = z;
         T[j] = d;
 
-    def update(s, t, i):
+    def update(c, s, t, i):
         if i == 0:
             set_block(c - 1, S[c-1] + 1, T[c-1])
             set_block(c, S[c] - 1, T[c])
@@ -1230,7 +1234,7 @@ def generate_necklace_debruijn(n, d):
             set_block(c + 1, s - 1, t - i)
             c += 1
 
-    def restore(s, t, i):
+    def restore(c, s, t, i):
         if i == 0:
             set_block(c - 1, S[c - 1] - 1, T[c - 1])
             set_block(c, S[c] + 1, T[c])
@@ -1253,11 +1257,11 @@ def generate_necklace_debruijn(n, d):
             return  0
         elif s - 1 == S[r]:
             if s == 2:
-                return Max(t-T[r], (t+1)/2)
+                return max(t-T[r], (t+1)/2)
             if ((s - 1 > S[c - 1] + 1) or \
                 (s - 1 == S[c - 1] + 1 and t <= T[c-1])):
-                return Max(t-T[r], 0)
-            return Max(t-T[r], 1)
+                return max(t-T[r], 0)
+            return max(t-T[r], 1)
         elif s == S[r]:
             return t
         raise ValueError("Invalid value of s provided.")
@@ -1265,7 +1269,6 @@ def generate_necklace_debruijn(n, d):
     def test_necklace(r):
         i = 0
         p = 0
-
         if d == 0 or d == n:
             return 1
         for i in xrange(c):
@@ -1293,5 +1296,55 @@ def generate_necklace_debruijn(n, d):
                 return 1
         return 0
 
+    def neck_oracle(c, s, t, r):
+        j = pseudo_oracle(s, t, r)
+        update(c, s, t, j)
+        if test_suffix(r) > 0:
+            p = test_necklace(c - 1)
+        else:
+            p = test_necklace(r)
+        restore(c, s, t, j)
+        if ((neck is True and p > 0) or
+            (lyn is True and p == n)):
+            return j
+        return j+1
+
+    def gen(c, s, t, r):
+        visit(r)
+        if (s > 0 and t > 0):
+            if pseudo is True:
+                j = psuedo_oracle(c, s, t, r)
+            else:
+                j = neck_oracle(c, s, t, r)
+
+            for i in xrange(t - 1, j - 1, -1):
+                if i < t - 1:
+                    _from = s + t - i
+                to = s
+                update(c, s, t, i)
+                a[s], a[t + s - i] = a[t + s - i], a[s]
+
+                if test_suffix(r) > 0:
+                    gen(c, s - 1, t - i, c - 1)
+                else:
+                    gen(c, s - 1, t - i, r)
+
+                a[s], a[t + s - i] = a[t + s - i], a[s]
+                restore(c, s, t, i)
+                _from = s + t - i
+                to =  s
+
+    def visit(r):
+        i = 0
+        p = 0
+        if db is True:
+            p = test_necklace(r)
+            print a[p:]
+        if stri is True:
+            print a
+        if bl is True:
+            print "zip(s[i],t[i])"
+
     set_block(1, d, n - d)
     a = [1] * d + [0] * (n - d)
+    gen(1, d, n - d, 1)
